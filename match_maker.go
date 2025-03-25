@@ -4,22 +4,13 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
-	"slices"
 	"time"
 
 	"github.com/gocarina/gocsv"
 	log "github.com/sirupsen/logrus"
 )
 
-type MatchMakerMatch struct {
-	Court   int    `csv:"court"`
-	Player1 string `csv:"player1"`
-	Player2 string `csv:"player2"`
-	Player3 string `csv:"player3"`
-	Player4 string `csv:"player4"`
-}
-
-func generateMatchMakerMatchesUntilSuccess() ([]MatchMakerMatch, error) {
+func generateMatchMakerMatchesUntilSuccess() ([]MatchMetadata, error) {
 	runNo := 0
 	matches, err := generateMatchMakerMatches()
 	for err != nil && runNo < MATCH_MAKER_RERUN {
@@ -36,7 +27,7 @@ func generateMatchMakerMatchesUntilSuccess() ([]MatchMakerMatch, error) {
 	return matches, nil
 }
 
-func generateMatchMakerMatches() ([]MatchMakerMatch, error) {
+func generateMatchMakerMatches() ([]MatchMetadata, error) {
 	playerAndRanking, playerGender, err := loadAvgRankingAndGender()
 	if err != nil {
 		log.Fatal(err)
@@ -45,16 +36,16 @@ func generateMatchMakerMatches() ([]MatchMakerMatch, error) {
 		panic(err)
 	}
 
-	MatchMakerMatches := []MatchMakerMatch{}
-	MatchMakerPlayerAndNoOfMatch := make(map[string]int16)
+	matchMakerMatches := []MatchMetadata{}
+	matchMakerPlayerAndNoOfMatch := make(map[string]int16)
 	for player := range playerAndRanking {
-		MatchMakerPlayerAndNoOfMatch[player] = 0
+		matchMakerPlayerAndNoOfMatch[player] = 0
 	}
-	MatchMakerPlayerAndOponentNoOfMatch := make(map[string]int16)
+	matchMakerPlayerAndOponentNoOfMatch := make(map[string]int16)
 	for player := range playerAndRanking {
 		for opponent := range playerAndRanking {
 			if opponent != player {
-				MatchMakerPlayerAndOponentNoOfMatch[generateKey(player, opponent)] = 0
+				matchMakerPlayerAndOponentNoOfMatch[generateKey(player, opponent)] = 0
 			}
 		}
 	}
@@ -64,28 +55,28 @@ func generateMatchMakerMatches() ([]MatchMakerMatch, error) {
 				for player4 := range playerAndRanking {
 					if isAllPlayersDifferentAndNoTwoFemaleSameTeam([]string{player1, player2, player3, player4}, playerGender) &&
 						percentageDifference(player1, player2, player3, player4, playerAndRanking) < MATCH_MAKER_MAX_RANK_PERCENTAGE_DIFFERENCE &&
-						MatchMakerPlayerAndNoOfMatch[player1] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
-						MatchMakerPlayerAndNoOfMatch[player2] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
-						MatchMakerPlayerAndNoOfMatch[player3] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
-						MatchMakerPlayerAndNoOfMatch[player4] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
-						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player3)] < MATCH_MAKER_MAX_REPEATED_OPPONENT &&
-						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player4)] < MATCH_MAKER_MAX_REPEATED_OPPONENT &&
-						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player3)] < MATCH_MAKER_MAX_REPEATED_OPPONENT &&
-						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player4)] < MATCH_MAKER_MAX_REPEATED_OPPONENT {
-						MatchMakerMatches = append(MatchMakerMatches, MatchMakerMatch{
+						matchMakerPlayerAndNoOfMatch[player1] < MATCH_MAKER_TOTAL_MATCH_PER_PERSON &&
+						matchMakerPlayerAndNoOfMatch[player2] < MATCH_MAKER_TOTAL_MATCH_PER_PERSON &&
+						matchMakerPlayerAndNoOfMatch[player3] < MATCH_MAKER_TOTAL_MATCH_PER_PERSON &&
+						matchMakerPlayerAndNoOfMatch[player4] < MATCH_MAKER_TOTAL_MATCH_PER_PERSON &&
+						matchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player3)] < MATCH_MAKER_MAX_REPEATED_OPPONENT &&
+						matchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player4)] < MATCH_MAKER_MAX_REPEATED_OPPONENT &&
+						matchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player3)] < MATCH_MAKER_MAX_REPEATED_OPPONENT &&
+						matchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player4)] < MATCH_MAKER_MAX_REPEATED_OPPONENT {
+						matchMakerMatches = append(matchMakerMatches, MatchMetadata{
 							Player1: player1,
 							Player2: player2,
 							Player3: player3,
 							Player4: player4,
 						})
-						MatchMakerPlayerAndNoOfMatch[player1] = MatchMakerPlayerAndNoOfMatch[player1] + 1
-						MatchMakerPlayerAndNoOfMatch[player2] = MatchMakerPlayerAndNoOfMatch[player2] + 1
-						MatchMakerPlayerAndNoOfMatch[player3] = MatchMakerPlayerAndNoOfMatch[player3] + 1
-						MatchMakerPlayerAndNoOfMatch[player4] = MatchMakerPlayerAndNoOfMatch[player4] + 1
-						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player3)] = MatchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player3)] + 1
-						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player4)] = MatchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player4)] + 1
-						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player3)] = MatchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player3)] + 1
-						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player4)] = MatchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player4)] + 1
+						matchMakerPlayerAndNoOfMatch[player1] = matchMakerPlayerAndNoOfMatch[player1] + 1
+						matchMakerPlayerAndNoOfMatch[player2] = matchMakerPlayerAndNoOfMatch[player2] + 1
+						matchMakerPlayerAndNoOfMatch[player3] = matchMakerPlayerAndNoOfMatch[player3] + 1
+						matchMakerPlayerAndNoOfMatch[player4] = matchMakerPlayerAndNoOfMatch[player4] + 1
+						matchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player3)] = matchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player3)] + 1
+						matchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player4)] = matchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player4)] + 1
+						matchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player3)] = matchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player3)] + 1
+						matchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player4)] = matchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player4)] + 1
 					}
 				}
 			}
@@ -93,7 +84,7 @@ func generateMatchMakerMatches() ([]MatchMakerMatch, error) {
 	}
 
 	// Check if player play enough match
-	for player, matchesPlayed := range MatchMakerPlayerAndNoOfMatch {
+	for player, matchesPlayed := range matchMakerPlayerAndNoOfMatch {
 		if matchesPlayed != MATCH_MAKER_TOTAL_MATCH_PER_PERSON {
 			err = fmt.Errorf("player %s plays %d matches. This mean you have to relax the requirements to generate enough matching, or check why player has to play more than they should", player, matchesPlayed)
 			return nil, err
@@ -101,42 +92,36 @@ func generateMatchMakerMatches() ([]MatchMakerMatch, error) {
 	}
 
 	// Randomly shuffle the matches order
-	for i := range MatchMakerMatches {
+	for i := range matchMakerMatches {
 		j := rand.Intn(i + 1)
-		MatchMakerMatches[i], MatchMakerMatches[j] = MatchMakerMatches[j], MatchMakerMatches[i]
+		matchMakerMatches[i], matchMakerMatches[j] = matchMakerMatches[j], matchMakerMatches[i]
 	}
 
 	// Assign match to court so that no player have to player 2 match in one round
 	playersInCurrentRound := []string{}
-	for i := range MatchMakerMatches {
+	for i := range matchMakerMatches {
 		courtNo := (i + 1) % NUMBER_OF_COURT
 		if courtNo == 0 {
 			courtNo = 4
 		}
 
 		// If any of 4 player already play this round, find closest group of 4 players that hasn't play and swap the index
-		if slices.Contains(playersInCurrentRound, MatchMakerMatches[i].Player1) ||
-			slices.Contains(playersInCurrentRound, MatchMakerMatches[i].Player2) ||
-			slices.Contains(playersInCurrentRound, MatchMakerMatches[i].Player3) ||
-			slices.Contains(playersInCurrentRound, MatchMakerMatches[i].Player4) {
+		if isPlayerExistInList(playersInCurrentRound, matchMakerMatches[i]) {
 			foundMatch := false
-			for j := i + 1; j < len(MatchMakerMatches); j++ {
-				if !slices.Contains(playersInCurrentRound, MatchMakerMatches[j].Player1) &&
-					!slices.Contains(playersInCurrentRound, MatchMakerMatches[j].Player2) &&
-					!slices.Contains(playersInCurrentRound, MatchMakerMatches[j].Player3) &&
-					!slices.Contains(playersInCurrentRound, MatchMakerMatches[j].Player4) {
-					MatchMakerMatches[i], MatchMakerMatches[j] = MatchMakerMatches[j], MatchMakerMatches[i]
+			for j := i + 1; j < len(matchMakerMatches); j++ {
+				if !isPlayerExistInList(playersInCurrentRound, matchMakerMatches[i]) {
+					matchMakerMatches[i], matchMakerMatches[j] = matchMakerMatches[j], matchMakerMatches[i]
 					foundMatch = true
 					break
 				}
 			}
 			if !foundMatch {
-				return nil, fmt.Errorf("cannot allocate court for some reason, playersInCurrentRound = %v, remaining matches = %v", playersInCurrentRound, MatchMakerMatches[i+1:])
+				return nil, fmt.Errorf("cannot allocate court for some reason, playersInCurrentRound = %v, remaining matches = %v", playersInCurrentRound, matchMakerMatches[i+1:])
 			}
 		}
 
-		MatchMakerMatches[i].Court = courtNo
-		playersInCurrentRound = append(playersInCurrentRound, MatchMakerMatches[i].Player1, MatchMakerMatches[i].Player2, MatchMakerMatches[i].Player3, MatchMakerMatches[i].Player4)
+		matchMakerMatches[i].Court = courtNo
+		playersInCurrentRound = append(playersInCurrentRound, matchMakerMatches[i].Player1, matchMakerMatches[i].Player2, matchMakerMatches[i].Player3, matchMakerMatches[i].Player4)
 	}
 
 	// Remember to output the result into a csv file, with timestamp to version control and allow us to the best possible match-up
@@ -145,9 +130,9 @@ func generateMatchMakerMatches() ([]MatchMakerMatch, error) {
 		panic(err)
 	}
 	defer MatchMakerFile.Close()
-	if err = gocsv.MarshalFile(&MatchMakerMatches, MatchMakerFile); err != nil {
+	if err = gocsv.MarshalFile(&matchMakerMatches, MatchMakerFile); err != nil {
 		panic(err)
 	}
 
-	return MatchMakerMatches, nil
+	return matchMakerMatches, nil
 }

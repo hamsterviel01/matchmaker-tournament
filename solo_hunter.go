@@ -10,16 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type SoloHunterMatch struct {
-	Court                int     `csv:"court"`
-	Player1              string  `csv:"player1"`
-	Player2              string  `csv:"player2"`
-	Player3              string  `csv:"player3"`
-	Player4              string  `csv:"player4"`
-	PercentageDifference float64 `csv:"percentage_difference"`
-}
-
-func generateSoloHunterMatchesUntilSuccess() ([]SoloHunterMatch, error) {
+func generateSoloHunterMatchesUntilSuccess() ([]MatchMetadata, error) {
 	runNo := 0
 	matches, err := generateSoloHunterMatches()
 	for err != nil && runNo < SOLO_HUNTER_RERUN {
@@ -37,7 +28,7 @@ func generateSoloHunterMatchesUntilSuccess() ([]SoloHunterMatch, error) {
 	return matches, nil
 }
 
-func generateSoloHunterMatches() ([]SoloHunterMatch, error) {
+func generateSoloHunterMatches() ([]MatchMetadata, error) {
 	playerAndRanking, playerGender, err := loadAvgRankingAndGender()
 	if err != nil {
 		log.Fatal(err)
@@ -46,7 +37,7 @@ func generateSoloHunterMatches() ([]SoloHunterMatch, error) {
 		panic(err)
 	}
 
-	soloHunterMatches := []SoloHunterMatch{}
+	soloHunterMatches := []MatchMetadata{}
 	soloHunterPlayerAndNoOfMatch := make(map[string]int16)
 	for player := range playerAndRanking {
 		soloHunterPlayerAndNoOfMatch[player] = 0
@@ -73,7 +64,7 @@ func generateSoloHunterMatches() ([]SoloHunterMatch, error) {
 						soloHunterPlayerAndOponentNoOfMatch[generateKey(player1, player4)] < SOLO_HUNTER_MAX_REPEATED_OPPONENT &&
 						soloHunterPlayerAndOponentNoOfMatch[generateKey(player2, player3)] < SOLO_HUNTER_MAX_REPEATED_OPPONENT &&
 						soloHunterPlayerAndOponentNoOfMatch[generateKey(player2, player4)] < SOLO_HUNTER_MAX_REPEATED_OPPONENT {
-						soloHunterMatches = append(soloHunterMatches, SoloHunterMatch{
+						soloHunterMatches = append(soloHunterMatches, MatchMetadata{
 							Player1:              player1,
 							Player2:              player2,
 							Player3:              player3,
