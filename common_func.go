@@ -9,6 +9,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+type MatchMetadata struct {
+	Court                int     `csv:"court"`
+	Player1              string  `csv:"player1"`
+	Player2              string  `csv:"player2"`
+	Player3              string  `csv:"player3"`
+	Player4              string  `csv:"player4"`
+	PercentageDifference float64 `csv:"percentage_difference"`
+}
+
 func loadAvgRankingAndGender() (map[string]float64, map[string]string, error) {
 	// Load from csv and take average of all ranking score. also output average team ranking
 	rankingFile, err := os.OpenFile("ranking_score.csv", os.O_RDWR|os.O_CREATE, os.ModePerm)
@@ -46,7 +55,7 @@ func isAllPlayersDifferentAndNoTwoFemaleSameTeam(players []string, playerGender 
 		playerIsUnique[player] = true
 	}
 
-	if (playerGender[players[0]] == "f" && playerGender[players[1]] == "f") || (playerGender[players[2]] == "f" && playerGender[players[3]] == "f" ) {
+	if (playerGender[players[0]] == "f" && playerGender[players[1]] == "f") || (playerGender[players[2]] == "f" && playerGender[players[3]] == "f") {
 		return false
 	}
 	return true
@@ -59,7 +68,7 @@ func generateKey(player1, player2 string) string {
 	return player2 + "-" + player1
 }
 
-func isPlayerExistInList(playerList []string, match SoloHunterMatch) bool {
+func isPlayerExistInList(playerList []string, match MatchMetadata) bool {
 	return slices.Contains(playerList, match.Player1) ||
 		slices.Contains(playerList, match.Player2) ||
 		slices.Contains(playerList, match.Player3) ||
