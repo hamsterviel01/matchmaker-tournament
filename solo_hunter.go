@@ -11,11 +11,11 @@ import (
 )
 
 type SoloHunterMatch struct {
-	Court   int    `csv:"court"`
-	Player1 string `csv:"player1"`
-	Player2 string `csv:"player2"`
-	Player3 string `csv:"player3"`
-	Player4 string `csv:"player4"`
+	Court                int     `csv:"court"`
+	Player1              string  `csv:"player1"`
+	Player2              string  `csv:"player2"`
+	Player3              string  `csv:"player3"`
+	Player4              string  `csv:"player4"`
 	PercentageDifference float64 `csv:"percentage_difference"`
 }
 
@@ -38,7 +38,7 @@ func generateSoloHunterMatchesUntilSuccess() ([]SoloHunterMatch, error) {
 }
 
 func generateSoloHunterMatches() ([]SoloHunterMatch, error) {
-	playerAndRanking, err := loadAvgRanking()
+	playerAndRanking, playerGender, err := loadAvgRankingAndGender()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -63,7 +63,7 @@ func generateSoloHunterMatches() ([]SoloHunterMatch, error) {
 		for player2 := range playerAndRanking {
 			for player3 := range playerAndRanking {
 				for player4 := range playerAndRanking {
-					if isAllPlayersDifferent([]string{player1, player2, player3, player4}) &&
+					if isAllPlayersDifferentAndNoTwoFemaleSameTeam([]string{player1, player2, player3, player4}, playerGender) &&
 						percentageDifference(player1, player2, player3, player4, playerAndRanking) < SOLO_HUNTER_MAX_RANK_PERCENTAGE_DIFFERENCE &&
 						soloHunterPlayerAndNoOfMatch[player1] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
 						soloHunterPlayerAndNoOfMatch[player2] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
@@ -74,10 +74,10 @@ func generateSoloHunterMatches() ([]SoloHunterMatch, error) {
 						soloHunterPlayerAndOponentNoOfMatch[generateKey(player2, player3)] < SOLO_HUNTER_MAX_REPEATED_OPPONENT &&
 						soloHunterPlayerAndOponentNoOfMatch[generateKey(player2, player4)] < SOLO_HUNTER_MAX_REPEATED_OPPONENT {
 						soloHunterMatches = append(soloHunterMatches, SoloHunterMatch{
-							Player1: player1,
-							Player2: player2,
-							Player3: player3,
-							Player4: player4,
+							Player1:              player1,
+							Player2:              player2,
+							Player3:              player3,
+							Player4:              player4,
 							PercentageDifference: percentageDifference(player1, player2, player3, player4, playerAndRanking),
 						})
 						soloHunterPlayerAndNoOfMatch[player1] = soloHunterPlayerAndNoOfMatch[player1] + 1
@@ -111,7 +111,7 @@ func generateSoloHunterMatches() ([]SoloHunterMatch, error) {
 	// Assign match to court so that no player have to player 2 match in one round
 	playersInCurrentRound := []string{}
 	for i := range soloHunterMatches {
-		courtNo := (i+1)%NUMBER_OF_COURT
+		courtNo := (i + 1) % NUMBER_OF_COURT
 		if courtNo == 0 {
 			courtNo = 4
 		}
@@ -129,7 +129,7 @@ func generateSoloHunterMatches() ([]SoloHunterMatch, error) {
 					break
 				}
 			}
-			if !foundMatch && i < len(soloHunterMatches) - 3 {
+			if !foundMatch && i < len(soloHunterMatches)-3 {
 				err = fmt.Errorf("cannot allocate court for some reason, playersInCurrentRound = %v, remaining matches = %v", playersInCurrentRound, soloHunterMatches[i+1:])
 				log.Error(err)
 				return nil, err
