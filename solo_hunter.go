@@ -2,10 +2,8 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"math/rand"
 	"os"
-	"slices"
 	"time"
 
 	"github.com/gocarina/gocsv"
@@ -18,6 +16,7 @@ type SoloHunterMatch struct {
 	Player2 string `csv:"player2"`
 	Player3 string `csv:"player3"`
 	Player4 string `csv:"player4"`
+	PercentageDifference float64 `csv:"percentage_difference"`
 }
 
 func generateSoloHunterMatchesUntilSuccess() ([]SoloHunterMatch, error) {
@@ -79,6 +78,7 @@ func generateSoloHunterMatches() ([]SoloHunterMatch, error) {
 							Player2: player2,
 							Player3: player3,
 							Player4: player4,
+							PercentageDifference: percentageDifference(player1, player2, player3, player4, playerAndRanking),
 						})
 						soloHunterPlayerAndNoOfMatch[player1] = soloHunterPlayerAndNoOfMatch[player1] + 1
 						soloHunterPlayerAndNoOfMatch[player2] = soloHunterPlayerAndNoOfMatch[player2] + 1
@@ -140,7 +140,7 @@ func generateSoloHunterMatches() ([]SoloHunterMatch, error) {
 		playersInCurrentRound = append(playersInCurrentRound, soloHunterMatches[i].Player1, soloHunterMatches[i].Player2, soloHunterMatches[i].Player3, soloHunterMatches[i].Player4)
 	}
 
-	// TODO - Remember to output the result into a csv file, with timestamp to version control and allow us to the best possible match-up
+	// Remember to output the result into a csv file, with timestamp to version control and allow us to the best possible match-up
 	SoloHunterFile, err := os.OpenFile(fmt.Sprintf("SoloHunter_%s.csv", time.Now().Format("200601021504")), os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.ModePerm)
 	if err != nil {
 		panic(err)
@@ -151,25 +151,4 @@ func generateSoloHunterMatches() ([]SoloHunterMatch, error) {
 	}
 
 	return soloHunterMatches, nil
-}
-
-func generateKey(player1, player2 string) string {
-	if player1 > player2 {
-		return player1 + "-" + player2
-	}
-	return player2 + "-" + player1
-}
-
-func isPlayerExistInList(playerList []string, match SoloHunterMatch) bool {
-	return slices.Contains(playerList, match.Player1) ||
-		slices.Contains(playerList, match.Player2) ||
-		slices.Contains(playerList, match.Player3) ||
-		slices.Contains(playerList, match.Player4)
-}
-
-func percentageDifference(player1, player2, player3, player4 string, playerAndRanking map[string]float64) float64 {
-	rankDistance := math.Abs(playerAndRanking[player1]+playerAndRanking[player2]-playerAndRanking[player3]-playerAndRanking[player4])
-	rankOfLesserTeam := math.Min(playerAndRanking[player1]+playerAndRanking[player2], playerAndRanking[player3]+playerAndRanking[player4])
-
-	return rankDistance/rankOfLesserTeam
 }
