@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"math/rand"
 	"os"
 	"slices"
@@ -64,15 +63,15 @@ func generateMatchMakerMatches() ([]MatchMakerMatch, error) {
 			for player3 := range playerAndRanking {
 				for player4 := range playerAndRanking {
 					if isAllPlayersDifferent([]string{player1, player2, player3, player4}) &&
-						math.Abs(playerAndRanking[player1]+playerAndRanking[player2]-playerAndRanking[player3]-playerAndRanking[player4]) < MATCH_MAKER_MAX_RANK_DIFFERENCE &&
-						MatchMakerPlayerAndNoOfMatch[player1] <= SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
-						MatchMakerPlayerAndNoOfMatch[player2] <= SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
-						MatchMakerPlayerAndNoOfMatch[player3] <= SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
-						MatchMakerPlayerAndNoOfMatch[player4] <= SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
-						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player3)] <= MATCH_MAKER_MAX_REPEATED_OPPONENT &&
-						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player4)] <= MATCH_MAKER_MAX_REPEATED_OPPONENT &&
-						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player3)] <= MATCH_MAKER_MAX_REPEATED_OPPONENT &&
-						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player4)] <= MATCH_MAKER_MAX_REPEATED_OPPONENT {
+						percentageDifference(player1, player2, player3, player4, playerAndRanking) < MATCH_MAKER_MAX_RANK_PERCENTAGE_DIFFERENCE &&
+						MatchMakerPlayerAndNoOfMatch[player1] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
+						MatchMakerPlayerAndNoOfMatch[player2] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
+						MatchMakerPlayerAndNoOfMatch[player3] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
+						MatchMakerPlayerAndNoOfMatch[player4] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
+						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player3)] < MATCH_MAKER_MAX_REPEATED_OPPONENT &&
+						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player1, player4)] < MATCH_MAKER_MAX_REPEATED_OPPONENT &&
+						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player3)] < MATCH_MAKER_MAX_REPEATED_OPPONENT &&
+						MatchMakerPlayerAndOponentNoOfMatch[generateKey(player2, player4)] < MATCH_MAKER_MAX_REPEATED_OPPONENT {
 						MatchMakerMatches = append(MatchMakerMatches, MatchMakerMatch{
 							Player1: player1,
 							Player2: player2,
@@ -93,6 +92,14 @@ func generateMatchMakerMatches() ([]MatchMakerMatch, error) {
 		}
 	}
 
+	// Check if player play enough match
+	for player, matchesPlayed := range MatchMakerPlayerAndNoOfMatch {
+		if matchesPlayed != MATCH_MAKER_TOTAL_MATCH_PER_PERSON {
+			err = fmt.Errorf("player %s plays %d matches. This mean you have to relax the requirements to generate enough matching, or check why player has to play more than they should", player, matchesPlayed)
+			return nil, err
+		}
+	}
+
 	// Randomly shuffle the matches order
 	for i := range MatchMakerMatches {
 		j := rand.Intn(i + 1)
@@ -102,11 +109,12 @@ func generateMatchMakerMatches() ([]MatchMakerMatch, error) {
 	// Assign match to court so that no player have to player 2 match in one round
 	playersInCurrentRound := []string{}
 	for i := range MatchMakerMatches {
-		// If any of 4 player already play this round, find closest group of 4 players that hasn't play and swap the index
-		if (i+1)%NUMBER_OF_COURT == 0 {
-			playersInCurrentRound = []string{}
+		courtNo := (i+1)%NUMBER_OF_COURT
+		if courtNo == 0 {
+			courtNo = 4
 		}
 
+		// If any of 4 player already play this round, find closest group of 4 players that hasn't play and swap the index
 		if slices.Contains(playersInCurrentRound, MatchMakerMatches[i].Player1) ||
 			slices.Contains(playersInCurrentRound, MatchMakerMatches[i].Player2) ||
 			slices.Contains(playersInCurrentRound, MatchMakerMatches[i].Player3) ||
@@ -127,7 +135,7 @@ func generateMatchMakerMatches() ([]MatchMakerMatch, error) {
 			}
 		}
 
-		MatchMakerMatches[i].Court = i%NUMBER_OF_COURT + 1
+		MatchMakerMatches[i].Court = courtNo
 		playersInCurrentRound = append(playersInCurrentRound, MatchMakerMatches[i].Player1, MatchMakerMatches[i].Player2, MatchMakerMatches[i].Player3, MatchMakerMatches[i].Player4)
 	}
 
@@ -139,14 +147,6 @@ func generateMatchMakerMatches() ([]MatchMakerMatch, error) {
 	defer MatchMakerFile.Close()
 	if err = gocsv.MarshalFile(&MatchMakerMatches, MatchMakerFile); err != nil {
 		panic(err)
-	}
-
-	// Check if player play enough match
-	for player, matchesPlayed := range MatchMakerPlayerAndNoOfMatch {
-		if matchesPlayed < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON {
-			err = fmt.Errorf("player %s only play %d matches. This mean you have to relax the requirements to generate enough matching", player, matchesPlayed)
-			return nil, err
-		}
 	}
 
 	return MatchMakerMatches, nil

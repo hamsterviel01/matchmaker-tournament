@@ -65,15 +65,15 @@ func generateSoloHunterMatches() ([]SoloHunterMatch, error) {
 			for player3 := range playerAndRanking {
 				for player4 := range playerAndRanking {
 					if isAllPlayersDifferent([]string{player1, player2, player3, player4}) &&
-						math.Abs(playerAndRanking[player1]+playerAndRanking[player2]-playerAndRanking[player3]-playerAndRanking[player4]) < SOLO_HUNTER_MAX_RANK_DIFFERENCE &&
-						soloHunterPlayerAndNoOfMatch[player1] <= SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
-						soloHunterPlayerAndNoOfMatch[player2] <= SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
-						soloHunterPlayerAndNoOfMatch[player3] <= SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
-						soloHunterPlayerAndNoOfMatch[player4] <= SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
-						soloHunterPlayerAndOponentNoOfMatch[generateKey(player1, player3)] <= SOLO_HUNTER_MAX_REPEATED_OPPONENT &&
-						soloHunterPlayerAndOponentNoOfMatch[generateKey(player1, player4)] <= SOLO_HUNTER_MAX_REPEATED_OPPONENT &&
-						soloHunterPlayerAndOponentNoOfMatch[generateKey(player2, player3)] <= SOLO_HUNTER_MAX_REPEATED_OPPONENT &&
-						soloHunterPlayerAndOponentNoOfMatch[generateKey(player2, player4)] <= SOLO_HUNTER_MAX_REPEATED_OPPONENT {
+						percentageDifference(player1, player2, player3, player4, playerAndRanking) < SOLO_HUNTER_MAX_RANK_PERCENTAGE_DIFFERENCE &&
+						soloHunterPlayerAndNoOfMatch[player1] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
+						soloHunterPlayerAndNoOfMatch[player2] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
+						soloHunterPlayerAndNoOfMatch[player3] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
+						soloHunterPlayerAndNoOfMatch[player4] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
+						soloHunterPlayerAndOponentNoOfMatch[generateKey(player1, player3)] < SOLO_HUNTER_MAX_REPEATED_OPPONENT &&
+						soloHunterPlayerAndOponentNoOfMatch[generateKey(player1, player4)] < SOLO_HUNTER_MAX_REPEATED_OPPONENT &&
+						soloHunterPlayerAndOponentNoOfMatch[generateKey(player2, player3)] < SOLO_HUNTER_MAX_REPEATED_OPPONENT &&
+						soloHunterPlayerAndOponentNoOfMatch[generateKey(player2, player4)] < SOLO_HUNTER_MAX_REPEATED_OPPONENT {
 						soloHunterMatches = append(soloHunterMatches, SoloHunterMatch{
 							Player1: player1,
 							Player2: player2,
@@ -94,6 +94,14 @@ func generateSoloHunterMatches() ([]SoloHunterMatch, error) {
 		}
 	}
 
+	// Check if player play enough match
+	for player, matchesPlayed := range soloHunterPlayerAndNoOfMatch {
+		if matchesPlayed != SOLO_HUNTER_TOTAL_MATCH_PER_PERSON {
+			err = fmt.Errorf("player %s plays %d matches. This mean you have to relax the requirements to generate enough matching, or something wrong and player play more than they should", player, matchesPlayed)
+			return nil, err
+		}
+	}
+
 	// Randomly shuffle the matches order
 	for i := range soloHunterMatches {
 		j := rand.Intn(i + 1)
@@ -103,7 +111,11 @@ func generateSoloHunterMatches() ([]SoloHunterMatch, error) {
 	// Assign match to court so that no player have to player 2 match in one round
 	playersInCurrentRound := []string{}
 	for i := range soloHunterMatches {
-		if (i+1)%NUMBER_OF_COURT == 0 {
+		courtNo := (i+1)%NUMBER_OF_COURT
+		if courtNo == 0 {
+			courtNo = 4
+		}
+		if courtNo == 1 {
 			playersInCurrentRound = []string{}
 		}
 
@@ -124,16 +136,8 @@ func generateSoloHunterMatches() ([]SoloHunterMatch, error) {
 			}
 		}
 
-		soloHunterMatches[i].Court = i%NUMBER_OF_COURT + 1
+		soloHunterMatches[i].Court = courtNo
 		playersInCurrentRound = append(playersInCurrentRound, soloHunterMatches[i].Player1, soloHunterMatches[i].Player2, soloHunterMatches[i].Player3, soloHunterMatches[i].Player4)
-	}
-
-	// Check if player play enough match
-	for player, matchesPlayed := range soloHunterPlayerAndNoOfMatch {
-		if matchesPlayed < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON {
-			err = fmt.Errorf("player %s only play %d matches. This mean you have to relax the requirements to generate enough matching", player, matchesPlayed)
-			return nil, err
-		}
 	}
 
 	// TODO - Remember to output the result into a csv file, with timestamp to version control and allow us to the best possible match-up
@@ -161,4 +165,11 @@ func isPlayerExistInList(playerList []string, match SoloHunterMatch) bool {
 		slices.Contains(playerList, match.Player2) ||
 		slices.Contains(playerList, match.Player3) ||
 		slices.Contains(playerList, match.Player4)
+}
+
+func percentageDifference(player1, player2, player3, player4 string, playerAndRanking map[string]float64) float64 {
+	rankDistance := math.Abs(playerAndRanking[player1]+playerAndRanking[player2]-playerAndRanking[player3]-playerAndRanking[player4])
+	rankOfLesserTeam := math.Min(playerAndRanking[player1]+playerAndRanking[player2], playerAndRanking[player3]+playerAndRanking[player4])
+
+	return rankDistance/rankOfLesserTeam
 }
