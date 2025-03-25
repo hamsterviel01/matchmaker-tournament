@@ -18,8 +18,9 @@ const MATCH_MAKER_RERUN = 10000
 
 const NUMBER_OF_COURT = 4
 
-type PlayerRanking struct {
+type PlayerMetadata struct {
 	Name        string  `csv:"name"`
+	Gender      string  `csv:"gender"`
 	TitRanking  float64 `csv:"tit_ranking"`
 	TaRanking   float64 `csv:"ta_ranking"`
 	MinhRanking float64 `csv:"minh_ranking"`
@@ -29,7 +30,7 @@ func main() {
 	log.SetReportCaller(true)
 	_, err := generateSoloHunterMatchesUntilSuccess()
 	if err != nil {
-		log.Errorf("fail to generate solo hunter matches %v",  err)
+		log.Errorf("fail to generate solo hunter matches %v", err)
 	}
 
 	_, err = generateMatchMakerMatchesUntilSuccess()

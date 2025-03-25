@@ -37,7 +37,7 @@ func generateMatchMakerMatchesUntilSuccess() ([]MatchMakerMatch, error) {
 }
 
 func generateMatchMakerMatches() ([]MatchMakerMatch, error) {
-	playerAndRanking, err := loadAvgRanking()
+	playerAndRanking, playerGender, err := loadAvgRankingAndGender()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -62,7 +62,7 @@ func generateMatchMakerMatches() ([]MatchMakerMatch, error) {
 		for player2 := range playerAndRanking {
 			for player3 := range playerAndRanking {
 				for player4 := range playerAndRanking {
-					if isAllPlayersDifferent([]string{player1, player2, player3, player4}) &&
+					if isAllPlayersDifferentAndNoTwoFemaleSameTeam([]string{player1, player2, player3, player4}, playerGender) &&
 						percentageDifference(player1, player2, player3, player4, playerAndRanking) < MATCH_MAKER_MAX_RANK_PERCENTAGE_DIFFERENCE &&
 						MatchMakerPlayerAndNoOfMatch[player1] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
 						MatchMakerPlayerAndNoOfMatch[player2] < SOLO_HUNTER_TOTAL_MATCH_PER_PERSON &&
@@ -109,7 +109,7 @@ func generateMatchMakerMatches() ([]MatchMakerMatch, error) {
 	// Assign match to court so that no player have to player 2 match in one round
 	playersInCurrentRound := []string{}
 	for i := range MatchMakerMatches {
-		courtNo := (i+1)%NUMBER_OF_COURT
+		courtNo := (i + 1) % NUMBER_OF_COURT
 		if courtNo == 0 {
 			courtNo = 4
 		}
