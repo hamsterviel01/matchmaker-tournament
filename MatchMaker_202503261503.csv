@@ -1,0 +1,23 @@
+court,player1,player2,player3,player4,percentage_difference
+1,Taran,Trung,Huyền Đào,Minh Võ,0.010869565217391412
+2,Xí Mụi,Tony Nghiệp,Quý Nguyễn,Trinh Tiêu,0.01648351648351672
+3,Minh Nguyễn,Mia,Lân,Hoa,0.022222222222222143
+4,Phan Tít,Hoàng,Tiên,Công Trần,0.01098901098901095
+1,Tuấn Anh,Jenny,Huyền Đào,Minh Võ,0.010869565217391412
+2,Xí Mụi,Tony Nghiệp,Huy Phạm,Quỳnh Anh,0.0882352941176473
+3,Minh Nguyễn,Mia,Quý Nguyễn,Trinh Tiêu,0.011111111111111072
+4,Taran,Trung,Lân,Hoa,0
+1,Minh Nguyễn,Mia,Huyền Đào,Minh Võ,0.03333333333333336
+2,Huy Phạm,Quỳnh Anh,Minh Đức,Nick,0.12352941176470593
+3,Taran,Trung,Tuấn Anh,Jenny,0
+4,Tiên,Công Trần,Lân,Hoa,0.01098901098901095
+1,Tuấn Anh,Jenny,Phan Tít,Hoàng,0.00000000000000007240584943207543
+2,Minh Đức,Nick,Quý Nguyễn,Trinh Tiêu,0.04945054945054942
+3,Huy Phạm,Quỳnh Anh,Tiên,Công Trần,0.07058823529411772
+4,Xí Mụi,Tony Nghiệp,Huyền Đào,Minh Võ,0.005405405405405241
+1,Huy Phạm,Quỳnh Anh,Quý Nguyễn,Trinh Tiêu,0.07058823529411772
+2,Minh Đức,Nick,Phan Tít,Hoàng,0.038043478260869505
+3,Tuấn Anh,Jenny,Lân,Hoa,0
+4,Taran,Trung,Tiên,Công Trần,0.01098901098901095
+1,Xí Mụi,Tony Nghiệp,Minh Đức,Nick,0.032432432432432164
+2,Minh Nguyễn,Mia,Phan Tít,Hoàng,0.022222222222222216
