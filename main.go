@@ -16,6 +16,7 @@ const MATCH_MAKER_MAX_REPEATED_OPPONENT = 1
 const MATCH_MAKER_RERUN = 10000
 var MATCH_MAKER_PREFERENCE_LIST = []MatchMakerTeam{
 	{Player1: "Xí Mụi", Player2: "Tony Nghiệp"},
+	{Player1: "Lân", Player2: "Quỳnh Anh"},
 }
 
 const NUMBER_OF_COURT = 4
