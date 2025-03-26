@@ -11,20 +11,14 @@ const SOLO_HUNTER_MAX_REPEATED_OPPONENT = 2
 const SOLO_HUNTER_RERUN = 50000
 
 // Conditions for match maker format
-const MATCH_MAKER_TOTAL_MATCH_PER_PERSON = 3
-const MATCH_MAKER_MAX_RANK_PERCENTAGE_DIFFERENCE = 0.15
-const MATCH_MAKER_MAX_REPEATED_OPPONENT = 2
+const MATCH_MAKER_TOTAL_MATCH_PER_PERSON = 4
+const MATCH_MAKER_MAX_REPEATED_OPPONENT = 1
 const MATCH_MAKER_RERUN = 10000
+var MATCH_MAKER_PREFERENCE_LIST = []MatchMakerTeam{
+	{Player1: "Xí Mụi", Player2: "Tony Nghiệp"},
+}
 
 const NUMBER_OF_COURT = 4
-
-type PlayerMetadata struct {
-	Name        string  `csv:"name"`
-	Gender      string  `csv:"gender"`
-	TitRanking  float64 `csv:"tit_ranking"`
-	TaRanking   float64 `csv:"ta_ranking"`
-	MinhRanking float64 `csv:"minh_ranking"`
-}
 
 func main() {
 	log.SetReportCaller(true)

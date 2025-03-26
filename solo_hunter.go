@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"os"
 	"time"
 
@@ -93,42 +92,10 @@ func generateSoloHunterMatches() ([]MatchMetadata, error) {
 		}
 	}
 
-	// Randomly shuffle the matches order
-	for i := range soloHunterMatches {
-		j := rand.Intn(i + 1)
-		soloHunterMatches[i], soloHunterMatches[j] = soloHunterMatches[j], soloHunterMatches[i]
-	}
-
 	// Assign match to court so that no player have to player 2 match in one round
-	playersInCurrentRound := []string{}
-	for i := range soloHunterMatches {
-		courtNo := (i + 1) % NUMBER_OF_COURT
-		if courtNo == 0 {
-			courtNo = 4
-		}
-		if courtNo == 1 {
-			playersInCurrentRound = []string{}
-		}
-
-		// If any of 4 player already play this round, find closest group of 4 players that hasn't play and swap the index
-		if isPlayerExistInList(playersInCurrentRound, soloHunterMatches[i]) {
-			foundMatch := false
-			for j := i + 1; j < len(soloHunterMatches); j++ {
-				if !isPlayerExistInList(playersInCurrentRound, soloHunterMatches[j]) {
-					soloHunterMatches[i], soloHunterMatches[j] = soloHunterMatches[j], soloHunterMatches[i]
-					foundMatch = true
-					break
-				}
-			}
-			if !foundMatch && i < len(soloHunterMatches)-3 {
-				err = fmt.Errorf("cannot allocate court for some reason, playersInCurrentRound = %v, remaining matches = %v", playersInCurrentRound, soloHunterMatches[i+1:])
-				log.Error(err)
-				return nil, err
-			}
-		}
-
-		soloHunterMatches[i].Court = courtNo
-		playersInCurrentRound = append(playersInCurrentRound, soloHunterMatches[i].Player1, soloHunterMatches[i].Player2, soloHunterMatches[i].Player3, soloHunterMatches[i].Player4)
+	soloHunterMatches, err = assignMatchesToCourts(soloHunterMatches)
+	if err != nil {
+		return nil, err
 	}
 
 	// Remember to output the result into a csv file, with timestamp to version control and allow us to the best possible match-up
