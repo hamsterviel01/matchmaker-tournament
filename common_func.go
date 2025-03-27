@@ -13,6 +13,7 @@ import (
 )
 
 type MatchMetadata struct {
+	MatchNo int `csv:"match_no"`
 	Court                int     `csv:"court"`
 	Player1              string  `csv:"player1"`
 	Player2              string  `csv:"player2"`
@@ -127,6 +128,7 @@ func assignMatchesToCourts(matchMakerMatches []MatchMetadata) ([]MatchMetadata, 
 
 	playersInCurrentRound := []string{}
 	courtNo := 1
+	matchNo := 1
 	for i := range matchMakerMatches {
 		if courtNo == 0 {
 			courtNo = 4
@@ -150,15 +152,19 @@ func assignMatchesToCourts(matchMakerMatches []MatchMetadata) ([]MatchMetadata, 
 				err := fmt.Errorf("cannot allocate court for some reason, playersInCurrentRound = %v, court %d remaining matches = %v", playersInCurrentRound, courtNo, matchMakerMatches[i+1:])
 				log.Warn(err)
 				matchMakerMatches[i].Court = 4
+				matchMakerMatches[i].MatchNo = matchNo
 				playersInCurrentRound = append(playersInCurrentRound, matchMakerMatches[i].Player1, matchMakerMatches[i].Player2, matchMakerMatches[i].Player3, matchMakerMatches[i].Player4)
 				courtNo = 1
+				matchNo++
 				continue
 			}
 		}
 
 		matchMakerMatches[i].Court = courtNo
+		matchMakerMatches[i].MatchNo = matchNo
 		playersInCurrentRound = append(playersInCurrentRound, matchMakerMatches[i].Player1, matchMakerMatches[i].Player2, matchMakerMatches[i].Player3, matchMakerMatches[i].Player4)
 		courtNo = (courtNo + 1)%4
+		matchNo++
 	}
 
 	return matchMakerMatches, nil

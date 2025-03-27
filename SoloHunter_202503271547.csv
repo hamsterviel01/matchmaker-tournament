@@ -1,45 +1,45 @@
-court,player1,player2,player3,player4,percentage_difference
-1,Tuấn Anh,Quỳnh Anh,Minh Đức,Mia,0.12499999999999988
-2,Trinh Tiêu,Quý Nguyễn,Công Trần,Jenny,0.04597701149425295
-3,Xí Mụi,Taran,Phan Tít,Minh Nguyễn,0.06806282722513078
-4,Hoa,Trung,Lân,Tony Nghiệp,0.08045977011494279
-1,Mia,Tony Nghiệp,Tiên,Quý Nguyễn,0.1084337349397588
-2,Xí Mụi,Nick,Phan Tít,Lân,0.0941176470588236
-3,Quỳnh Anh,Minh Nguyễn,Jenny,Hoàng,0.02352941176470588
-4,Hoa,Huy Phạm,Trung,Taran,0.09782608695652169
-1,Tuấn Anh,Hoa,Hoàng,Tiên,0.05494505494505505
-2,Jenny,Nick,Minh Nguyễn,Mia,0.09090909090909109
-3,Huyền Đào,Trung,Quý Nguyễn,Taran,0.06593406593406592
-4,Xí Mụi,Minh Đức,Minh Nguyễn,Hoàng,0.005025125628140753
-1,Jenny,Minh Võ,Hoa,Tiên,0.08235294117647061
-2,Tuấn Anh,Mia,Quỳnh Anh,Lân,0.11842105263157905
-3,Huyền Đào,Huy Phạm,Nick,Taran,0.1475409836065575
-4,Trinh Tiêu,Tony Nghiệp,Phan Tít,Hoàng,0.010869565217391484
-1,Trinh Tiêu,Huy Phạm,Jenny,Tony Nghiệp,0.11111111111111101
-2,Tiên,Minh Đức,Công Trần,Hoa,0.10989010989010979
-3,Huyền Đào,Taran,Phan Tít,Quý Nguyễn,0.08602150537634415
-4,Quỳnh Anh,Minh Võ,Nick,Trung,0.11643835616438332
-1,Trinh Tiêu,Minh Nguyễn,Mia,Huy Phạm,0.11111111111111094
-2,Hoa,Tony Nghiệp,Lân,Xí Mụi,0.03867403314917143
-3,Tuấn Anh,Tiên,Phan Tít,Taran,0.02083333333333326
-4,Quý Nguyễn,Trung,Minh Võ,Nick,0.04191616766467051
-1,Tuấn Anh,Xí Mụi,Tony Nghiệp,Minh Võ,0.03846153846153847
-2,Trinh Tiêu,Hoàng,Quỳnh Anh,Huy Phạm,0.05882352941176474
-3,Huyền Đào,Nick,Minh Đức,Lân,0.11602209944751377
-4,Jenny,Taran,Tiên,Mia,0.14814814814814803
-1,Hoa,Lân,Trung,Xí Mụi,0.07602339181286547
-2,Huyền Đào,Minh Đức,Huy Phạm,Minh Võ,0.07142857142857145
-3,Tuấn Anh,Jenny,Hoàng,Công Trần,0.022222222222222143
-4,Quỳnh Anh,Công Trần,Trung,Jenny,0.10666666666666647
-1,Trinh Tiêu,Trung,Hoàng,Huyền Đào,0.10465116279069786
-2,Quỳnh Anh,Minh Đức,Taran,Công Trần,0.12941176470588245
-3,Tiên,Minh Nguyễn,Phan Tít,Huy Phạm,0.009900990099009998
-4,Tuấn Anh,Huyền Đào,Minh Võ,Xí Mụi,0.14285714285714288
-1,Xí Mụi,Minh Nguyễn,Nick,Minh Đức,0.0418848167539267
-2,Mia,Lân,Quý Nguyễn,Công Trần,0.12345679012345667
-3,Huyền Đào,Minh Võ,Huy Phạm,Tony Nghiệp,0.10752688172043015
-4,Hoa,Quý Nguyễn,Phan Tít,Tony Nghiệp,0.03260869565217409
-1,Quỳnh Anh,Hoàng,Công Trần,Nick,0.13999999999999996
-2,Trinh Tiêu,Lân,Quý Nguyễn,Mia,0.12345679012345676
-4,Tiên,Công Trần,Minh Nguyễn,Minh Võ,0.07692307692307694
-1,Tuấn Anh,Trinh Tiêu,Phan Tít,Minh Đức,0.07368421052631566
+match_no,court,player1,player2,player3,player4,percentage_difference
+1,1,Tuấn Anh,Quỳnh Anh,Minh Đức,Mia,0.12500000000000000
+2,2,Trinh Tiêu,Quý Nguyễn,Công Trần,Jenny,0.04597701149425300
+3,3,Xí Mụi,Taran,Phan Tít,Minh Nguyễn,0.06806282722513080
+4,4,Hoa,Trung,Lân,Tony Nghiệp,0.08045977011494280
+5,1,Mia,Tony Nghiệp,Tiên,Quý Nguyễn,0.1084337349397590
+6,2,Xí Mụi,Nick,Phan Tít,Lân,0.0941176470588236
+7,3,Quỳnh Anh,Minh Nguyễn,Jenny,Hoàng,0.02352941176470590
+8,4,Hoa,Huy Phạm,Trung,Taran,0.09782608695652170
+9,1,Tuấn Anh,Hoa,Hoàng,Tiên,0.05494505494505510
+10,2,Jenny,Nick,Minh Nguyễn,Mia,0.09090909090909110
+11,3,Huyền Đào,Trung,Quý Nguyễn,Taran,0.06593406593406590
+12,4,Xí Mụi,Minh Đức,Minh Nguyễn,Hoàng,0.005025125628140750
+13,1,Jenny,Minh Võ,Hoa,Tiên,0.08235294117647060
+14,2,Tuấn Anh,Mia,Quỳnh Anh,Lân,0.11842105263157900
+15,3,Huyền Đào,Huy Phạm,Nick,Taran,0.1475409836065580
+16,4,Trinh Tiêu,Tony Nghiệp,Phan Tít,Hoàng,0.010869565217391500
+17,1,Trinh Tiêu,Huy Phạm,Jenny,Tony Nghiệp,0.11111111111111100
+18,2,Tiên,Minh Đức,Công Trần,Hoa,0.10989010989011000
+19,3,Huyền Đào,Taran,Phan Tít,Quý Nguyễn,0.08602150537634420
+20,4,Quỳnh Anh,Minh Võ,Nick,Trung,0.11643835616438300
+21,1,Trinh Tiêu,Minh Nguyễn,Mia,Huy Phạm,0.11111111111111100
+22,2,Hoa,Tony Nghiệp,Lân,Xí Mụi,0.03867403314917140
+23,3,Tuấn Anh,Tiên,Phan Tít,Taran,0.02083333333333330
+24,4,Quý Nguyễn,Trung,Minh Võ,Nick,0.04191616766467050
+25,1,Tuấn Anh,Xí Mụi,Tony Nghiệp,Minh Võ,0.03846153846153850
+26,2,Trinh Tiêu,Hoàng,Quỳnh Anh,Huy Phạm,0.05882352941176470
+27,3,Huyền Đào,Nick,Minh Đức,Lân,0.11602209944751400
+28,4,Jenny,Taran,Tiên,Mia,0.14814814814814800
+29,1,Hoa,Lân,Trung,Xí Mụi,0.07602339181286550
+30,2,Huyền Đào,Minh Đức,Huy Phạm,Minh Võ,0.07142857142857150
+31,3,Tuấn Anh,Jenny,Hoàng,Công Trần,0.022222222222222100
+32,4,Quỳnh Anh,Công Trần,Trung,Jenny,0.10666666666666600
+33,1,Trinh Tiêu,Trung,Hoàng,Huyền Đào,0.10465116279069800
+34,2,Quỳnh Anh,Minh Đức,Taran,Công Trần,0.12941176470588200
+35,3,Tiên,Minh Nguyễn,Phan Tít,Huy Phạm,0.009900990099010000
+36,4,Tuấn Anh,Huyền Đào,Minh Võ,Xí Mụi,0.14285714285714300
+37,1,Xí Mụi,Minh Nguyễn,Nick,Minh Đức,0.0418848167539267
+38,2,Mia,Lân,Quý Nguyễn,Công Trần,0.12345679012345700
+39,3,Huyền Đào,Minh Võ,Huy Phạm,Tony Nghiệp,0.10752688172043000
+40,4,Hoa,Quý Nguyễn,Phan Tít,Tony Nghiệp,0.03260869565217410
+41,1,Quỳnh Anh,Hoàng,Công Trần,Nick,0.14000000000000000
+42,2,Trinh Tiêu,Lân,Quý Nguyễn,Mia,0.12345679012345700
+43,4,Tiên,Công Trần,Minh Nguyễn,Minh Võ,0.07692307692307690
+44,1,Tuấn Anh,Trinh Tiêu,Phan Tít,Minh Đức,0.07368421052631570
