@@ -49,6 +49,14 @@ func generateSoloHunterMatches() ([]MatchMetadata, error) {
 			}
 		}
 	}
+	soloHunterTeammateNoOfMatch := make(map[string]int16)
+	for player := range playerAndRanking {
+		for teammate := range playerAndRanking {
+			if teammate != player {
+				soloHunterTeammateNoOfMatch[generateKey(player, teammate)] = 0
+			}
+		}
+	}
 	for player1 := range playerAndRanking {
 		for player2 := range playerAndRanking {
 			for player3 := range playerAndRanking {
@@ -62,7 +70,9 @@ func generateSoloHunterMatches() ([]MatchMetadata, error) {
 						soloHunterPlayerAndOponentNoOfMatch[generateKey(player1, player3)] < SOLO_HUNTER_MAX_REPEATED_OPPONENT &&
 						soloHunterPlayerAndOponentNoOfMatch[generateKey(player1, player4)] < SOLO_HUNTER_MAX_REPEATED_OPPONENT &&
 						soloHunterPlayerAndOponentNoOfMatch[generateKey(player2, player3)] < SOLO_HUNTER_MAX_REPEATED_OPPONENT &&
-						soloHunterPlayerAndOponentNoOfMatch[generateKey(player2, player4)] < SOLO_HUNTER_MAX_REPEATED_OPPONENT {
+						soloHunterPlayerAndOponentNoOfMatch[generateKey(player2, player4)] < SOLO_HUNTER_MAX_REPEATED_OPPONENT &&
+						soloHunterTeammateNoOfMatch[generateKey(player1, player2)] < SOLO_HUNTER_MAX_REPEATED_TEAMMATE &&
+						soloHunterTeammateNoOfMatch[generateKey(player3, player4)] < SOLO_HUNTER_MAX_REPEATED_TEAMMATE {
 						soloHunterMatches = append(soloHunterMatches, MatchMetadata{
 							Player1:              player1,
 							Player2:              player2,
@@ -78,6 +88,8 @@ func generateSoloHunterMatches() ([]MatchMetadata, error) {
 						soloHunterPlayerAndOponentNoOfMatch[generateKey(player1, player4)] = soloHunterPlayerAndOponentNoOfMatch[generateKey(player1, player4)] + 1
 						soloHunterPlayerAndOponentNoOfMatch[generateKey(player2, player3)] = soloHunterPlayerAndOponentNoOfMatch[generateKey(player2, player3)] + 1
 						soloHunterPlayerAndOponentNoOfMatch[generateKey(player2, player4)] = soloHunterPlayerAndOponentNoOfMatch[generateKey(player2, player4)] + 1
+						soloHunterTeammateNoOfMatch[generateKey(player1, player2)] = soloHunterTeammateNoOfMatch[generateKey(player1, player2)] + 1
+						soloHunterTeammateNoOfMatch[generateKey(player3, player4)] = soloHunterTeammateNoOfMatch[generateKey(player3, player4)] + 1
 					}
 				}
 			}
