@@ -21,6 +21,7 @@ var MATCH_MAKER_PREFERENCE_LIST = []MatchMakerTeam{
 }
 
 const NUMBER_OF_COURT = 4
+var COURTS_NO = []int{6, 7, 8, 9}
 
 func main() {
 	log.SetReportCaller(true)

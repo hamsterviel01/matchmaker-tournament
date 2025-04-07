@@ -136,7 +136,7 @@ func generateMatchMakerMatches(teams []MatchMakerTeam) ([]MatchMetadata, error) 
 	}
 
 	// Assign match to court so that no player have to player 2 match in one round
-	matches, err = assignMatchesToCourts(matches)
+	matches, err = assignMatchesToCourts(matches, COURTS_NO, false)
 	if err != nil {
 		return nil, err
 	}

@@ -105,7 +105,7 @@ func generateSoloHunterMatches() ([]MatchMetadata, error) {
 	}
 
 	// Assign match to court so that no player have to player 2 match in one round
-	soloHunterMatches, err = assignMatchesToCourts(soloHunterMatches)
+	soloHunterMatches, err = assignMatchesToCourts(soloHunterMatches, COURTS_NO, false)
 	if err != nil {
 		return nil, err
 	}

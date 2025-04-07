@@ -119,22 +119,21 @@ func percentageDifference(player1, player2, player3, player4 string, playerAndRa
 	return rankDistance / rankOfLesserTeam
 }
 
-func assignMatchesToCourts(matchMakerMatches []MatchMetadata) ([]MatchMetadata, error) {
+func assignMatchesToCourts(matchMakerMatches []MatchMetadata, listOfCourts []int, disableMatchShuffle bool) ([]MatchMetadata, error) {
 	// Randomly shuffle the matches order
-	for i := range matchMakerMatches {
-		j := rand.Intn(i + 1)
-		matchMakerMatches[i], matchMakerMatches[j] = matchMakerMatches[j], matchMakerMatches[i]
+	if !disableMatchShuffle {
+		for i := range matchMakerMatches {
+			j := rand.Intn(i + 1)
+			matchMakerMatches[i], matchMakerMatches[j] = matchMakerMatches[j], matchMakerMatches[i]
+		}
 	}
 
 	playersInCurrentRound := []string{}
-	courtNo := 1
+	// TODO - Change this later, for simplicity, assume there is only 4 courts right now
+	indexInListOfCourts := 0
 	matchNo := 1
 	for i := range matchMakerMatches {
-		if courtNo == 0 {
-			courtNo = 4
-		}
-
-		if courtNo == 1 {
+		if indexInListOfCourts == 0 {
 			playersInCurrentRound = []string{}
 		}
 
@@ -149,21 +148,25 @@ func assignMatchesToCourts(matchMakerMatches []MatchMetadata) ([]MatchMetadata, 
 				}
 			}
 			if !foundMatch {
-				err := fmt.Errorf("cannot allocate court for some reason, playersInCurrentRound = %v, court %d remaining matches = %v", playersInCurrentRound, courtNo, matchMakerMatches[i+1:])
-				log.Warn(err)
-				matchMakerMatches[i].Court = 4
-				matchMakerMatches[i].MatchNo = matchNo
-				playersInCurrentRound = append(playersInCurrentRound, matchMakerMatches[i].Player1, matchMakerMatches[i].Player2, matchMakerMatches[i].Player3, matchMakerMatches[i].Player4)
-				courtNo = 1
-				matchNo++
-				continue
+				// Skip this round and go straight to next round - 
+				// indexInListOfCourts = 0
+				// matchMakerMatches[i].Court = listOfCourts[indexInListOfCourts]
+				// matchMakerMatches[i].MatchNo = matchNo
+				// playersInCurrentRound = []string{matchMakerMatches[i].Player1, matchMakerMatches[i].Player2, matchMakerMatches[i].Player3, matchMakerMatches[i].Player4}
+				// indexInListOfCourts = (indexInListOfCourts + 1) % len(listOfCourts)
+				// matchNo++
+				// continue
+				
+				err := fmt.Errorf("cannot allocate court for some reason, playersInCurrentRound = %v, court %d remaining matches = %v", playersInCurrentRound, indexInListOfCourts, matchMakerMatches[i+1:])
+				log.Error(err)
+				return nil, err
 			}
 		}
 
-		matchMakerMatches[i].Court = courtNo
+		matchMakerMatches[i].Court = listOfCourts[indexInListOfCourts]
 		matchMakerMatches[i].MatchNo = matchNo
 		playersInCurrentRound = append(playersInCurrentRound, matchMakerMatches[i].Player1, matchMakerMatches[i].Player2, matchMakerMatches[i].Player3, matchMakerMatches[i].Player4)
-		courtNo = (courtNo + 1)%4
+		indexInListOfCourts = (indexInListOfCourts + 1) % len(listOfCourts)
 		matchNo++
 	}
 
